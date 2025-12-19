@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from models import API
+from models import HealthLog
 
 router = APIRouter()
 
@@ -38,3 +39,16 @@ def get_api_status(db: Session = Depends(get_db)):
         })
 
     return result
+
+@router.get("/api/logs")
+def get_health_logs(db: Session = Depends(get_db)):
+    logs = db.query(HealthLog).order_by(HealthLog.checked_at.desc()).limit(50).all()
+
+    return [
+        {
+            "api_id": log.api_id,
+            "status": log.status,
+            "checked_at": log.checked_at
+        }
+        for log in logs
+    ]

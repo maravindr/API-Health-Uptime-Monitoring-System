@@ -3,6 +3,7 @@ import time
 from apscheduler.schedulers.background import BackgroundScheduler
 from database import SessionLocal
 from models import API
+from models import API, HealthLog
 
 
 def check_apis():
@@ -22,6 +23,11 @@ def check_apis():
 
         except Exception:
             api.status = "DOWN"
+        log = HealthLog(
+        api_id=api.id,
+        status=api.status
+            )
+        db.add(log)
 
         db.commit()
 
