@@ -15,7 +15,7 @@ def check_apis():
             response = requests.request(api.method, api.url, timeout=5)
             response_time = round(time.time() - start, 2)
 
-            if response.status_code == 200:
+            if response.status_code < 300:
                 api.status = "UP"
             else:
                 api.status = "DOWN"
